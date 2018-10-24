@@ -24,9 +24,9 @@ $page = [
 ];
 
 /**
- * This is our "Router'is"
+ * Čia yra mūsų "Router'is"
  * Kiekvienam page iškviečiame
- * jo controllerį
+ * atitinkamą controller'į
  */
 if (isset($_GET['page'])) {
     $page_name = $_GET['page'];
