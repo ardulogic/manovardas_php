@@ -1,47 +1,88 @@
 <?php
-$atstumas = rand(0, 1000);
-$kuro_suvartojimas = 7.5;
-$kuro_kaina = 1.3;
-$bako_talpa = 40;
-$mano_pinigai = 100;
+// Load all functions here
+require_once 'functions/core.php';
 
-$suvartota_litru = $atstumas / 100 * $kuro_suvartojimas;
-$keliones_kaina = $suvartota_litru * $kuro_kaina;
+// Enable/Disable Debugging
+$debug = true;
 
-$p = "Nuvažiavus $atstumas km, mašina sunaudos $suvartota_litru litrų kuro.<br>";
-$p .= "Kaina: $keliones_kaina pinigų<br>";
+/**
+ * Default $page array:
+ * Array of all page variables
+ * and settings
+ */
+$page = [
+    'title' => 'Error: 404',
+    'stylesheet' => 'main.css',
+    'content' => [
+        // Šitas variable 'rendered' bus sukurtas controllerio
+        // Tai bus ilgas HTML'o stringas sukurtas funkcijos
+        // render_page()
+        'rendered' => 'Tokio puslapio nerasta'
+    ],
+    'show_header' => true,
+    'show_footer' => true,
+];
 
-if ($keliones_kaina > $mano_pinigai) {
-    $p .= 'Aš sau negaliu to leisti';
-} else {
-    $p .= 'Aš sau tai galiu leisti.';
-}
-$p .= '<br>';
+/**
+ * This is our "Router'is"
+ * Kiekvienam page iškviečiame
+ * jo controllerį
+ */
+if (isset($_GET['page'])) {
+    $page_name = $_GET['page'];
 
-// Bronze užduoties dalis
-$uzsipylimai = $suvartota_litru / $bako_talpa;
-if ($uzsipylimai > 1) {
-    $p .= 'Kurą pakartotinai pilti reikės';
-} else {
-    $p .= "Kuro pakartotinai pilti nereikės.";
-}
-
-// Silver užduoties dalis
-$tolimiausia_kelione = $mano_pinigai / $kuro_kaina / $kuro_suvartojimas * 100;
-$p .= "Tolimiausia galima kelionė su turimais pinigais: $tolimiausia_kelione km";
-$p .= '<br>';
-
-// Gold užduoties dalis
-// Galima sumergint'i su bronze dalimi
-if ($uzsipylimai > 1) {
-    $p .= 'Kurą pakartotinai pilti reikės ' . ceil($uzsipylimai - 1) . ' kart(ą)us.';
+    if ($page_name == 'home') {
+        run_controller($page, 'home');
+    }
+    //elseif ($page_name == 'cv') {
+    //    run_controller($page, 'cv');
+    //}
+    
+    /**
+     * Best Way
+     */
+    /*
+    switch ($page_name) {
+        case 'home':
+            run_controller($page, home);
+            break;
+        case 'cv':
+            run_controller($page, cv);
+            break;
+        default:
+        // run_controller($page, '404');
+    }
+     */
 }
 ?>
 <html>
     <head>
-        <title>Kuro Skaičiuoklė</title>
+        <title><?php print $page['title']; ?></title>
+        <link rel="stylesheet" type="text/css" href="/css/<?php print $page['stylesheet']; ?>">
     </head>
     <body>
-        <p><?php print $p; ?></p> 
+        <!-- Debug Output !-->
+        <?php if ($debug) var_dump($page); ?>
+        
+        <!-- Header !-->
+        <?php if ($page['show_header']): ?>
+            <div class="header-wrapper">
+                <?php include ('templates/objects/header.tpl.php'); ?>
+            </div>
+        <?php endif; ?>
+        
+        <!-- Content !-->
+        <?php if (isset($page['content']['rendered'])): ?>
+            <div class="content-wrapper">
+                <?php print $page['content']['rendered']; ?>
+            </div>
+        <?php endif; ?>
+        
+        <!-- Footer !-->
+        <?php if ($page['show_footer']): ?>
+            <div class="footer-wrapper">
+                <?php include ('templates/objects/footer.tpl.php'); ?>
+            </div>
+        <?php endif; ?>
     </body>
 </html>
